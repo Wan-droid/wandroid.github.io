@@ -207,7 +207,62 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="Andoid中WebView在本地与Html中JS相互调用"><a href="#Andoid中WebView在本地与Html中JS相互调用" class="headerlink" title="Andoid中WebView在本地与Html中JS相互调用"></a>Andoid中WebView在本地与Html中JS相互调用</h2>
+        <a id="more"></a>
+<ul>
+<li><h3 id="WebView简单设置准备"><a href="#WebView简单设置准备" class="headerlink" title="WebView简单设置准备"></a>WebView简单设置准备</h3>  <figure class="highlight java"><table><tr><td class="code"><pre><div class="line">WebSettings settings = mWebView.getSettings();</div><div class="line">settings.setJavaScriptEnabled(<span class="keyword">true</span>);</div></pre></td></tr></table></figure>
+</li>
+<li><h3 id="Html调用Android本地JS"><a href="#Html调用Android本地JS" class="headerlink" title="Html调用Android本地JS"></a>Html调用Android本地JS</h3><ul>
+<li>匿名内部类写法（其他写法就不说了）</li>
+</ul>
+<ul>
+<li>js方法带一个参数，有了这个，无参和有多个参数的js方法就好说了</li>
+<li>方法一定要一定要一定要添加这个注解@JavascriptInterface</li>
+<li>注意这个方法可以让JS代码控制宿主程序，这是一个非常有力的特性，但是同时也存在一些安全问题，因为进一步JS代码可以通过反射访问到注入对象的公有域。攻击者可能会在HTML和JavaScript中包含了有威胁性的代码。<br><strong>所以Android 4.1，API 17，也就是JELLY_BEAN 开始，只有被JavascriptInterface 注解标识的公有方法可以被JS代码访问。</strong> //这一段是copy的</li>
+<li><p>参数解释</p>
+<ul>
+<li><p>第一个参数是一个Object对象，这里采用匿名内部类的写法了，毕竟只是个小例子。其中定义了一个供Html的JS调用的方法functionTest()；<br>调用方式为：(重点：<strong>javascript:DEMO.functionTest()</strong>)</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">id</span>=<span class="string">"ttt"</span> <span class="attr">onclick</span>=<span class="string">"javascript:DEMO.functionTest()"</span>&gt;</span>Click Me 中文会乱码吗<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>    - 第二个参数相比已经知道了，借用一下API的解释：__the name used to expose the object in JavaScript__
+    它只是一个给JS用来标识的名字
+
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"></div><div class="line">mWebView.addJavascriptInterface(<span class="keyword">new</span> Object()</div><div class="line">    &#123;</div><div class="line">        <span class="meta">@JavascriptInterface</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">functionTest</span><span class="params">()</span></span></div><div class="line">        &#123;</div><div class="line">            mHandler.post(<span class="keyword">new</span> Runnable()</div><div class="line">            &#123;</div><div class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span></div><div class="line">                &#123;</div><div class="line">                    mWebView.loadUrl(<span class="string">"javascript:test('"</span> + <span class="string">"123456"</span> + <span class="string">"')"</span>);</div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line">        &#125;</div><div class="line">    &#125;, <span class="string">"DEMO"</span>);</div></pre></td></tr></table></figure>
+</code></pre><ul>
+<li><h3 id="Android调用Html中的JS"><a href="#Android调用Html中的JS" class="headerlink" title="Android调用Html中的JS"></a>Android调用Html中的JS</h3><p>  其实，上面已经写过了，只有一句话：</p>
+  <figure class="highlight java"><table><tr><td class="code"><pre><div class="line"></div><div class="line">mWebView.loadUrl(<span class="string">"javascript:test('"</span> + <span class="string">"123456"</span> + <span class="string">"')"</span>);</div></pre></td></tr></table></figure>
+<p>  貌似有点过于简单了呢，那就再多说点：</p>
+<ul>
+<li>test(str)是写在Html中的一个JS函数，直接上整个Html代码吧，瞧</li>
+</ul>
+</li>
+</ul>
+<pre><code>&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Document&lt;/title&gt;
+       &lt;script&gt;
+        function test(str) {
+            document.getElementById(&quot;ttt&quot;).innerHTML = str;
+            alert(&quot;1&quot;);
+        }
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div&gt;
+     &lt;a href=&quot;#&quot; id=&quot;ttt&quot; onclick=&quot;javascript:DEMO.functionTest()&quot;&gt;Click Me 中文会乱码吗&lt;/a&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><ul>
+<li><p>关于alert这个方法<br>如果你没有写下面这个的话，是不会产生反应的</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"></div><div class="line">mWebView.setWebChromeClient(<span class="keyword">new</span> WebChromeClient()&#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onJsAlert</span><span class="params">(WebView view, String url, String message, JsResult result)</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">super</span>.onJsAlert(view, url, message, result);</div><div class="line">        &#125;</div><div class="line">    &#125;);</div></pre></td></tr></table></figure></li>
+</ul>
+
       
     </div>
     
@@ -220,10 +275,6 @@
 
       
 
-      
-        <p class="article-more-link">
-          <a  href="/2016/08/22/Android 与Html的js相互调用/#more">Read More >></a>
-        </p>
       
       <div class="clearfix"></div>
     </div>
