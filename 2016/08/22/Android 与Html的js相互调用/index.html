@@ -6,35 +6,29 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <title>Andoid中WebView在本地与Html中JS相互调用 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="WebView简单设置准备  WebSettings settings = mWebView.getSettings();settings.setJavaScriptEnabled(true);
+  <meta name="description" content="WebView简单设置准备  12WebSettings settings = mWebView.getSettings();settings.setJavaScriptEnabled(true);
 
 Html调用Android本地JS
 匿名内部类写法（其他写法就不说了）
-
-
 js方法带一个参数，有了这个，无参和有多个参数的js方法就好说了
 方法一定要一定要一定要添加这个注解@Javascript">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Andoid中WebView在本地与Html中JS相互调用">
 <meta property="og:url" content="http://wanqijun.github.io/2016/08/22/Android 与Html的js相互调用/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="WebView简单设置准备  WebSettings settings = mWebView.getSettings();settings.setJavaScriptEnabled(true);
+<meta property="og:description" content="WebView简单设置准备  12WebSettings settings = mWebView.getSettings();settings.setJavaScriptEnabled(true);
 
 Html调用Android本地JS
 匿名内部类写法（其他写法就不说了）
-
-
 js方法带一个参数，有了这个，无参和有多个参数的js方法就好说了
 方法一定要一定要一定要添加这个注解@Javascript">
-<meta property="og:updated_time" content="2016-08-22T14:00:12.924Z">
+<meta property="og:updated_time" content="2016-08-22T14:13:41.412Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Andoid中WebView在本地与Html中JS相互调用">
-<meta name="twitter:description" content="WebView简单设置准备  WebSettings settings = mWebView.getSettings();settings.setJavaScriptEnabled(true);
+<meta name="twitter:description" content="WebView简单设置准备  12WebSettings settings = mWebView.getSettings();settings.setJavaScriptEnabled(true);
 
 Html调用Android本地JS
 匿名内部类写法（其他写法就不说了）
-
-
 js方法带一个参数，有了这个，无参和有多个参数的js方法就好说了
 方法一定要一定要一定要添加这个注解@Javascript">
   
@@ -240,56 +234,33 @@ js方法带一个参数，有了这个，无参和有多个参数的js方法就�
       
         <a id="more"></a>
 <ul>
-<li><h3 id="WebView简单设置准备"><a href="#WebView简单设置准备" class="headerlink" title="WebView简单设置准备"></a>WebView简单设置准备</h3>  <figure class="highlight java"><table><tr><td class="code"><pre><div class="line">WebSettings settings = mWebView.getSettings();</div><div class="line">settings.setJavaScriptEnabled(<span class="keyword">true</span>);</div></pre></td></tr></table></figure>
+<li><h3 id="WebView简单设置准备"><a href="#WebView简单设置准备" class="headerlink" title="WebView简单设置准备"></a>WebView简单设置准备</h3>  <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">WebSettings settings = mWebView.getSettings();</div><div class="line">settings.setJavaScriptEnabled(<span class="keyword">true</span>);</div></pre></td></tr></table></figure>
 </li>
 <li><h3 id="Html调用Android本地JS"><a href="#Html调用Android本地JS" class="headerlink" title="Html调用Android本地JS"></a>Html调用Android本地JS</h3><ul>
 <li>匿名内部类写法（其他写法就不说了）</li>
-</ul>
-<ul>
 <li>js方法带一个参数，有了这个，无参和有多个参数的js方法就好说了</li>
 <li>方法一定要一定要一定要添加这个注解@JavascriptInterface</li>
 <li>注意这个方法可以让JS代码控制宿主程序，这是一个非常有力的特性，但是同时也存在一些安全问题，因为进一步JS代码可以通过反射访问到注入对象的公有域。攻击者可能会在HTML和JavaScript中包含了有威胁性的代码。<br><strong>所以Android 4.1，API 17，也就是JELLY_BEAN 开始，只有被JavascriptInterface 注解标识的公有方法可以被JS代码访问。</strong> //这一段是copy的</li>
 <li>参数解释<ul>
-<li>第一个参数是一个Object对象，这里采用匿名内部类的写法了，毕竟只是个小例子。其中定义了一个供Html的JS调用的方法functionTest()；<br>调用方式为：(重点：<strong>javascript:DEMO.functionTest()</strong>)</li>
+<li>第一个参数是一个Object对象，这里采用匿名内部类的写法了，毕竟只是个小例子。其中定义了一个供Html的JS调用的方法functionTest()；<br>调用方式为：(重点：<strong>javascript:DEMO.functionTest()</strong>)        <pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">               &lt;a href=&quot;#&quot; id=&quot;ttt&quot; onclick=&quot;javascript:DEMO.functionTest()&quot;&gt;Click Me 中文会乱码吗&lt;/a&gt; </div><div class="line">             ```  </div><div class="line">       * 第二个参数相比已经知道了，借用一下API的解释：__the name used to expose the object in JavaScript__</div><div class="line">	它只是一个给JS用来标识的名字</div><div class="line"></div><div class="line">       </div><div class="line">```java</div><div class="line">   mWebView.addJavascriptInterface(new Object()</div><div class="line">       &#123;</div><div class="line">           @JavascriptInterface</div><div class="line">           public void functionTest()</div><div class="line">           &#123;</div><div class="line">               mHandler.post(new Runnable()</div><div class="line">               &#123;</div><div class="line">                   public void run()</div><div class="line">                   &#123;</div><div class="line">                       mWebView.loadUrl(&quot;javascript:test(&apos;&quot; + &quot;123456&quot; + &quot;&apos;)&quot;);</div><div class="line">                   &#125;</div><div class="line">               &#125;);</div><div class="line">           &#125;</div><div class="line">       &#125;, &quot;DEMO&quot;);</div></pre></td></tr></table></figure>
+</code></pre></li>
 </ul>
 </li>
 </ul>
-<figure class="highlight html"><table><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">id</span>=<span class="string">"ttt"</span> <span class="attr">onclick</span>=<span class="string">"javascript:DEMO.functionTest()"</span>&gt;</span>Click Me 中文会乱码吗<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div></pre></td></tr></table></figure>
 </li>
-</ul>
-<pre><code>    * 第二个参数相比已经知道了，借用一下API的解释：__the name used to expose the object in JavaScript__
-    它只是一个给JS用来标识的名字
-
-<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">mWebView.addJavascriptInterface(<span class="keyword">new</span> Object()</div><div class="line">    &#123;</div><div class="line">        <span class="meta">@JavascriptInterface</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">functionTest</span><span class="params">()</span></span></div><div class="line">        &#123;</div><div class="line">            mHandler.post(<span class="keyword">new</span> Runnable()</div><div class="line">            &#123;</div><div class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span></div><div class="line">                &#123;</div><div class="line">                    mWebView.loadUrl(<span class="string">"javascript:test('"</span> + <span class="string">"123456"</span> + <span class="string">"')"</span>);</div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line">        &#125;</div><div class="line">    &#125;, <span class="string">"DEMO"</span>);</div></pre></td></tr></table></figure>
-</code></pre><ul>
 <li><h3 id="Android调用Html中的JS"><a href="#Android调用Html中的JS" class="headerlink" title="Android调用Html中的JS"></a>Android调用Html中的JS</h3><p>  其实，上面已经写过了，只有一句话：</p>
-  <figure class="highlight java"><table><tr><td class="code"><pre><div class="line"></div><div class="line">mWebView.loadUrl(<span class="string">"javascript:test('"</span> + <span class="string">"123456"</span> + <span class="string">"')"</span>);</div></pre></td></tr></table></figure>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mWebView.loadUrl(<span class="string">"javascript:test('"</span> + <span class="string">"123456"</span> + <span class="string">"')"</span>);</div></pre></td></tr></table></figure>
 <p>  貌似有点过于简单了呢，那就再多说点：</p>
 <ul>
-<li>test(str)是写在Html中的一个JS函数，直接上整个Html代码吧，瞧</li>
+<li><p>test(str)是写在Html中的一个JS函数，直接上整个Html代码吧，瞧</p>
+  <figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">  		<span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></div><div class="line">  		<span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line"> 			<span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></div><div class="line">  			function test(str) &#123;</div><div class="line">      			document.getElementById("ttt").innerHTML = str;</div><div class="line">      			alert("1");</div><div class="line">  			&#125;</div><div class="line">	<span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></div><div class="line">       	<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">id</span>=<span class="string">"ttt"</span> <span class="attr">onclick</span>=<span class="string">"javascript:DEMO.functionTest()"</span>&gt;</span>Click Me 中文会乱码吗<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
 </ul>
 </li>
 </ul>
-<pre><code>&lt;html lang=&quot;en&quot;&gt;
-&lt;head&gt;
-    &lt;meta charset=&quot;UTF-8&quot;&gt;
-    &lt;title&gt;Document&lt;/title&gt;
-       &lt;script&gt;
-        function test(str) {
-            document.getElementById(&quot;ttt&quot;).innerHTML = str;
-            alert(&quot;1&quot;);
-        }
-    &lt;/script&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;div&gt;
-     &lt;a href=&quot;#&quot; id=&quot;ttt&quot; onclick=&quot;javascript:DEMO.functionTest()&quot;&gt;Click Me 中文会乱码吗&lt;/a&gt;
-&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</code></pre><ul>
+<ul>
 <li><p>关于alert这个方法<br>如果你没有写下面这个的话，是不会产生反应的</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"></div><div class="line">mWebView.setWebChromeClient(<span class="keyword">new</span> WebChromeClient()&#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onJsAlert</span><span class="params">(WebView view, String url, String message, JsResult result)</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">super</span>.onJsAlert(view, url, message, result);</div><div class="line">        &#125;</div><div class="line">    &#125;);</div></pre></td></tr></table></figure></li>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">mWebView.setWebChromeClient(<span class="keyword">new</span> WebChromeClient()&#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onJsAlert</span><span class="params">(WebView view, String url, String message, JsResult result)</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">super</span>.onJsAlert(view, url, message, result);</div><div class="line">        &#125;</div><div class="line">    &#125;);</div></pre></td></tr></table></figure></li>
 </ul>
 
       
