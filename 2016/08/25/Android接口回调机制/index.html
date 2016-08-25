@@ -15,16 +15,22 @@
 
 
 
-<meta name="description" content="Andoid中WebView在本地与Html中JS相互调用">
+<meta name="description" content="Android接口回调机制接口回调是在Android中运用广泛的一种机制，你一定会眼熟它，接下来，我们从两个方面来了解接口回调
+Android源码
+自行动手实际运用">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Andoid中WebView在本地与Html中JS相互调用">
-<meta property="og:url" content="http://wanqijun.github.io/2016/08/22/Android 与Html的js相互调用/index.html">
+<meta property="og:title" content="带你了解Android接口回调机制">
+<meta property="og:url" content="http://wanqijun.github.io/2016/08/25/Android接口回调机制/index.html">
 <meta property="og:site_name" content="genylife's blog">
-<meta property="og:description" content="Andoid中WebView在本地与Html中JS相互调用">
-<meta property="og:updated_time" content="2016-08-23T00:50:15.372Z">
+<meta property="og:description" content="Android接口回调机制接口回调是在Android中运用广泛的一种机制，你一定会眼熟它，接下来，我们从两个方面来了解接口回调
+Android源码
+自行动手实际运用">
+<meta property="og:updated_time" content="2016-08-25T09:09:57.817Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Andoid中WebView在本地与Html中JS相互调用">
-<meta name="twitter:description" content="Andoid中WebView在本地与Html中JS相互调用">
+<meta name="twitter:title" content="带你了解Android接口回调机制">
+<meta name="twitter:description" content="Android接口回调机制接口回调是在Android中运用广泛的一种机制，你一定会眼熟它，接下来，我们从两个方面来了解接口回调
+Android源码
+自行动手实际运用">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -56,7 +62,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Andoid中WebView在本地与Html中JS相互调用 | genylife&#39;s blog</title>
+<title>带你了解Android接口回调机制 | genylife&#39;s blog</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -232,11 +238,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-Android 与Html的js相互调用" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Android接口回调机制" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/08/22/Android 与Html的js相互调用/" class="article-date">
-      <time datetime="2016-08-21T16:00:00.000Z" itemprop="datePublished">2016-08-22</time>
+      <a href="/2016/08/25/Android接口回调机制/" class="article-date">
+      <time datetime="2016-08-24T16:00:00.000Z" itemprop="datePublished">2016-08-25</time>
 </a>
 
 
@@ -251,7 +257,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Andoid中WebView在本地与Html中JS相互调用
+      带你了解Android接口回调机制
     </h1>
   
 
@@ -262,7 +268,7 @@
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android-RecyclerView-接口回调/">Android RecyclerView 接口回调</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -272,25 +278,22 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h3 id="Andoid中WebView在本地与Html中JS相互调用"><a href="#Andoid中WebView在本地与Html中JS相互调用" class="headerlink" title="Andoid中WebView在本地与Html中JS相互调用"></a>Andoid中WebView在本地与Html中JS相互调用</h3><a id="more"></a>
-<h3 id="WebView简单设置准备"><a href="#WebView简单设置准备" class="headerlink" title="WebView简单设置准备"></a>WebView简单设置准备</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">WebSettings settings = mWebView.getSettings();</div><div class="line">settings.setJavaScriptEnabled(<span class="keyword">true</span>);</div></pre></td></tr></table></figure>
-<h3 id="Html调用Android本地JS"><a href="#Html调用Android本地JS" class="headerlink" title="Html调用Android本地JS"></a>Html调用Android本地JS</h3><ul>
-<li>匿名内部类写法（其他写法就不说了）</li>
-<li>js方法带一个参数，有了这个，无参和有多个参数的js方法就好说了</li>
-<li>方法一定要一定要一定要添加这个注解@JavascriptInterface</li>
-<li>注意这个方法可以让JS代码控制宿主程序，这是一个非常有力的特性，但是同时也存在一些安全问题，因为进一步JS代码可以通过反射访问到注入对象的公有域。攻击者可能会在HTML和JavaScript中包含了有威胁性的代码。<br><strong>所以Android 4.1，API 17，也就是JELLY_BEAN 开始，只有被JavascriptInterface 注解标识的公有方法可以被JS代码访问。</strong> //这一段是copy的<ul>
-<li>参数解释<ul>
-<li>第一个参数是一个Object对象，这里采用匿名内部类的写法了，毕竟只是个小例子。其中定义了一个供Html的JS调用的方法functionTest()；<br>调用方式为：(重点：<strong>javascript:DEMO.functionTest()</strong>)<br><code>&lt;a href=&quot;#&quot; id=&quot;ttt&quot; onclick=&quot;javascript:DEMO.functionTest()&quot;&gt;Click Me 中文会乱码吗&lt;/a&gt;</code></li>
-<li>第二个参数相比已经知道了，借用一下API的解释：<strong>the name used to expose the object in JavaScript</strong><br>它只是一个给JS用来标识的名字</li>
+        <h1 id="Android接口回调机制"><a href="#Android接口回调机制" class="headerlink" title="Android接口回调机制"></a>Android接口回调机制</h1><h4 id="接口回调是在Android中运用广泛的一种机制，你一定会眼熟它，接下来，我们从两个方面来了解接口回调"><a href="#接口回调是在Android中运用广泛的一种机制，你一定会眼熟它，接下来，我们从两个方面来了解接口回调" class="headerlink" title="接口回调是在Android中运用广泛的一种机制，你一定会眼熟它，接下来，我们从两个方面来了解接口回调"></a>接口回调是在Android中运用广泛的一种机制，你一定会眼熟它，接下来，我们从两个方面来了解接口回调</h4><ul>
+<li>Android源码</li>
+<li>自行动手实际运用</li>
 </ul>
+<a id="more"></a>
+<h2 id="1-从setOnclickListener-看接口回调"><a href="#1-从setOnclickListener-看接口回调" class="headerlink" title="1.从setOnclickListener()看接口回调"></a>1.从setOnclickListener()看接口回调</h2><p>大家都会熟悉这样的写法<code>button.setOnClickListener(new onClickListener()...</code><br>跟进去看看源码：<strong>其实就是为这个View设置了一个点击事件回调</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOnClickListener</span><span class="params">(@Nullable OnClickListener l)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (!isClickable()) &#123;</div><div class="line">            setClickable(<span class="keyword">true</span>);</div><div class="line">        &#125;</div><div class="line">        getListenerInfo().mOnClickListener = l;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<h2 id="2-为RecyclerView的ItemView设置事件监听"><a href="#2-为RecyclerView的ItemView设置事件监听" class="headerlink" title="2.为RecyclerView的ItemView设置事件监听"></a>2.为RecyclerView的ItemView设置事件监听</h2><ul>
+<li><h4 id="这是自行定义的接口："><a href="#这是自行定义的接口：" class="headerlink" title="这是自行定义的接口："></a>这是自行定义的接口：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">RecyclerViewItemClick</span></span></div><div class="line">&#123;</div><div class="line">   	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onRecyclerViewItemClick</span><span class="params">(View view, <span class="keyword">int</span> position)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><h4 id="在RecyclerView的Adapter里面有一个回调接口的对象，并为它设置Set方法"><a href="#在RecyclerView的Adapter里面有一个回调接口的对象，并为它设置Set方法" class="headerlink" title="在RecyclerView的Adapter里面有一个回调接口的对象，并为它设置Set方法"></a>在RecyclerView的Adapter里面有一个回调接口的对象，并为它设置Set方法</h4><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">	/**</div><div class="line">     * ItemView点击事件</div><div class="line">     */</div><div class="line">    private RecyclerViewItemClick mOnRecyclerViewItemClick;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 设置ItemView点击事件</div><div class="line">     *</div><div class="line">     * @param onRecyclerViewItemClick</div><div class="line">     */</div><div class="line">    public void setOnRecyclerViewItemClick(RecyclerViewItemClick onRecyclerViewItemClick)</div><div class="line">    &#123;</div><div class="line">        mOnRecyclerViewItemClick = onRecyclerViewItemClick;</div><div class="line">    &#125;</div><div class="line">```    </div><div class="line">* #### 然后在onBindViewHolder方法里面添加这样一句代码：</div><div class="line">```java</div><div class="line">	holder.itemView.setOnClickListener(new View.OnClickListener()</div><div class="line">        &#123;</div><div class="line">            @Override</div><div class="line">            public void onClick(View v)</div><div class="line">            &#123;</div><div class="line">                mOnRecyclerViewItemClick.onRecyclerViewItemClick(v, position);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure>
+</li>
+<li><h4 id="最后在业务逻辑中就可以这样写了"><a href="#最后在业务逻辑中就可以这样写了" class="headerlink" title="最后在业务逻辑中就可以这样写了"></a>最后在业务逻辑中就可以这样写了</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">adapter.setOnRecyclerViewItemClick(<span class="keyword">new</span> RecyclerViewItemClick()</div><div class="line">      &#123;</div><div class="line">          <span class="meta">@Override</span></div><div class="line">          <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onRecyclerViewItemClick</span><span class="params">(View view, <span class="keyword">int</span> position)</span></span></div><div class="line">          &#123;</div><div class="line">              <span class="comment">//在这里对点击事件进行处理</span></div><div class="line">          &#125;</div><div class="line">      &#125;);</div></pre></td></tr></table></figure>
+</li>
+<li><h4 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h4><p>接口回调机制比较简单，可以花点时间自己理解一下。在这里只是简单的为RecyclerView添加点击事件，只是为了理解接口回调机制，另外也可以使用<code>RecyclerView.onItemTouchListener</code>去扩展他的点击事件。</p>
 </li>
 </ul>
-</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">mWebView.addJavascriptInterface(<span class="keyword">new</span> Object()</div><div class="line">    &#123;</div><div class="line">        <span class="meta">@JavascriptInterface</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">functionTest</span><span class="params">()</span></span></div><div class="line">        &#123;</div><div class="line">            mHandler.post(<span class="keyword">new</span> Runnable()</div><div class="line">            &#123;</div><div class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span></div><div class="line">                &#123;</div><div class="line">                    mWebView.loadUrl(<span class="string">"javascript:test('"</span> + <span class="string">"123456"</span> + <span class="string">"')"</span>);</div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line">        &#125;</div><div class="line">    &#125;, <span class="string">"DEMO"</span>);</div></pre></td></tr></table></figure>
-<h3 id="Android调用Html中的JS"><a href="#Android调用Html中的JS" class="headerlink" title="Android调用Html中的JS"></a>Android调用Html中的JS</h3><p>其实，上面已经写过了，只有一句话：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mWebView.loadUrl(<span class="string">"javascript:test('"</span> + <span class="string">"123456"</span> + <span class="string">"')"</span>);</div></pre></td></tr></table></figure></p>
-<p>貌似有点过于简单了呢，那就再多说点：<br>    test(str)是写在Html中的一个JS函数，直接上整个Html代码吧，瞧<br>     <figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">   	<span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></div><div class="line">   	<span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line">  		<span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></div><div class="line">   		function test(str) &#123;</div><div class="line">       		document.getElementById("ttt").innerHTML = str;</div><div class="line">       		alert("1");</div><div class="line">   		&#125;</div><div class="line">	<span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">div</span>&gt;</span></div><div class="line">        	<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">id</span>=<span class="string">"ttt"</span> <span class="attr">onclick</span>=<span class="string">"javascript:DEMO.functionTest()"</span>&gt;</span>Click Me 中文会乱码吗<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure></p>
-<p>关于alert这个方法<br>    如果你没有写下面这个的话，是不会产生反应的<br>    <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">mWebView.setWebChromeClient(<span class="keyword">new</span> WebChromeClient()&#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onJsAlert</span><span class="params">(WebView view, String url, String message, JsResult result)</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">super</span>.onJsAlert(view, url, message, result);</div><div class="line">        &#125;</div><div class="line">    &#125;);</div></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -302,12 +305,12 @@
 
     <nav id="article-nav">
         
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2016/08/25/Android接口回调机制/">
-                    带你了解Android接口回调机制
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/08/22/Android 与Html的js相互调用/">
+                    Andoid中WebView在本地与Html中JS相互调用
                 </a>
             </div>
-        
         
     </nav>
 
@@ -317,7 +320,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Andoid中WebView在本地与Html中JS相互调用"><span class="toc-number">1.</span> <span class="toc-text">Andoid中WebView在本地与Html中JS相互调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WebView简单设置准备"><span class="toc-number">2.</span> <span class="toc-text">WebView简单设置准备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Html调用Android本地JS"><span class="toc-number">3.</span> <span class="toc-text">Html调用Android本地JS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Android调用Html中的JS"><span class="toc-number">4.</span> <span class="toc-text">Android调用Html中的JS</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Android接口回调机制"><span class="toc-number">1.</span> <span class="toc-text">Android接口回调机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#接口回调是在Android中运用广泛的一种机制，你一定会眼熟它，接下来，我们从两个方面来了解接口回调"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">接口回调是在Android中运用广泛的一种机制，你一定会眼熟它，接下来，我们从两个方面来了解接口回调</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-从setOnclickListener-看接口回调"><span class="toc-number">1.1.</span> <span class="toc-text">1.从setOnclickListener()看接口回调</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-为RecyclerView的ItemView设置事件监听"><span class="toc-number">1.2.</span> <span class="toc-text">2.为RecyclerView的ItemView设置事件监听</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#这是自行定义的接口："><span class="toc-number">1.2.0.1.</span> <span class="toc-text">这是自行定义的接口：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#在RecyclerView的Adapter里面有一个回调接口的对象，并为它设置Set方法"><span class="toc-number">1.2.0.2.</span> <span class="toc-text">在RecyclerView的Adapter里面有一个回调接口的对象，并为它设置Set方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#最后在业务逻辑中就可以这样写了"><span class="toc-number">1.2.0.3.</span> <span class="toc-text">最后在业务逻辑中就可以这样写了</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#结束语"><span class="toc-number">1.2.0.4.</span> <span class="toc-text">结束语</span></a></li></ol></li></ol></li></ol></li></ol>
         
     </div>
     <style>
@@ -353,7 +356,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"Andoid中WebView在本地与Html中JS相互调用　| genylife's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"带你了解Android接口回调机制　| genylife's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -369,7 +372,7 @@
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2016/08/22/Android 与Html的js相互调用/" data-title="Andoid中WebView在本地与Html中JS相互调用" data-url="http://wanqijun.github.io/2016/08/22/Android 与Html的js相互调用/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/08/25/Android接口回调机制/" data-title="带你了解Android接口回调机制" data-url="http://wanqijun.github.io/2016/08/25/Android接口回调机制/"></div>
     <script>
         var duoshuoQuery = {short_name:"genylife"};
         var loadComment = function(){
@@ -392,15 +395,15 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2016/08/25/Android接口回调机制/" title="上一篇: 带你了解Android接口回调机制">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
 
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+            <a href="/2016/08/22/Android 与Html的js相互调用/" title="下一篇: Andoid中WebView在本地与Html中JS相互调用">
+                <i class="fa fa-angle-right"></i>
+            </a>
         
     </div>
 
