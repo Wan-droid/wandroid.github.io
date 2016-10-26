@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="genylife" />
+
+
+
+<meta name="description" content="ActivityManagerNative分析
+手写AIDL的实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从ActivityManagerNative看Android系统AIDL的实现">
+<meta property="og:url" content="http://genylife.top/201610/从ActivityManagerNative看Android系统AIDL的实现/index.html">
+<meta property="og:site_name" content="genylife's blog">
+<meta property="og:description" content="ActivityManagerNative分析
+手写AIDL的实现">
+<meta property="og:updated_time" content="2016-10-26T09:20:07.429Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从ActivityManagerNative看Android系统AIDL的实现">
+<meta name="twitter:description" content="ActivityManagerNative分析
+手写AIDL的实现">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="genylife&#39;s blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/img/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>从ActivityManagerNative看Android系统AIDL的实现 | genylife&#39;s blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?7984b6963243504423cee6c0434dc492";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/icon.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">genylife</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">genylife&#39;s blog</p>
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/随笔">随笔</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:wanqijun@outlook.com" title="Email"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 简书" href="http://www.jianshu.com/users/9cc2ad33af4d/latest_articles" title="简书"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AIDL/">AIDL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ActivityManagerNative/">ActivityManagerNative</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android-Studio/">Android Studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Binder/">Binder</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keymap/">Keymap</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RecyclerView/">RecyclerView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/android/">android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/android-studio/">android studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hybrid/">hybrid</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/react-native/">react-native</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/接口回调/">接口回调</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编程技巧/">编程技巧</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+
+                
+                
+                <section class="switch-part switch-part3">
+                
+                    <div id="js-aboutme">Android--还没开始写</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">genylife</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/icon.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">genylife</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">genylife&#39;s blog</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/随笔">随笔</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:wanqijun@outlook.com" title="Email"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="http://www.jianshu.com/users/9cc2ad33af4d/latest_articles" title="简书"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-从ActivityManagerNative看Android系统AIDL的实现" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/201610/从ActivityManagerNative看Android系统AIDL的实现/" class="article-date">
+      <time datetime="2016-10-26T09:10:47.000Z" itemprop="datePublished">2016-10-26</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      从ActivityManagerNative看Android系统AIDL的实现
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AIDL/">AIDL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ActivityManagerNative/">ActivityManagerNative</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Binder/">Binder</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <ul>
+<li>ActivityManagerNative分析</li>
+<li>手写AIDL的实现</li>
+</ul>
+<a id="more"></a>
+<hr>
+<p>看这个之前，可以先去看看大神对于Binder机制的分析，在这里附上地址 </p>
+<h2 id="了解Binder机制"><a href="#了解Binder机制" class="headerlink" title="了解Binder机制"></a><a href="http://weishu.me/2016/01/12/binder-index-for-newer/" target="_blank" rel="external">了解Binder机制</a></h2><hr>
+<p>看完之后，再来看IActivityManager，ActivityManagerNative，ActivityManagerService这三者之间的关系。</p>
+<h3 id="IActivityManager：这就相当于AIDL中定义的接口，其中包括三个部分"><a href="#IActivityManager：这就相当于AIDL中定义的接口，其中包括三个部分" class="headerlink" title="IActivityManager：这就相当于AIDL中定义的接口，其中包括三个部分"></a>IActivityManager：这就相当于AIDL中定义的接口，其中包括三个部分</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IActivityManager</span> <span class="keyword">extends</span> <span class="title">IInterface</span></span>&#123;</div><div class="line"><span class="comment">// 省略一大波代码</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li><p>对该接口的完整类名描述</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">String descriptor = <span class="string">"android.app.IActivityManager"</span>;</div></pre></td></tr></table></figure>
+</li>
+<li><p>接口方法定义</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">startActivity</span><span class="params">(<span class="comment">/*参数忽略*/</span>)</span> <span class="keyword">throws</span> RemoteException</span>;</div><div class="line"><span class="comment">// 此处省略N条方法定义</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>接口方法的<strong>transaction code(后面有用到的)</strong>定义</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> START_ACTIVITY_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+<span class="number">2</span>;</div><div class="line"><span class="comment">// 此处省略N条transaction code定义</span></div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="ActivityManagerNative：接口的Binder机制实现类，NOTICE-并没有实现IActivityManager中定义的方法，这个后面再说；这里面分为两部分"><a href="#ActivityManagerNative：接口的Binder机制实现类，NOTICE-并没有实现IActivityManager中定义的方法，这个后面再说；这里面分为两部分" class="headerlink" title="ActivityManagerNative：接口的Binder机制实现类，NOTICE:并没有实现IActivityManager中定义的方法，这个后面再说；这里面分为两部分"></a>ActivityManagerNative：接口的Binder机制实现类，<strong>NOTICE:</strong>并没有实现IActivityManager中定义的方法，这个后面再说；这里面分为两部分</h3><ol>
+<li><p><strong>ActivityManagerNative (对应AIDL生成的Stub类)</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ActivityManagerNative</span> <span class="keyword">extends</span> <span class="title">Binder</span> <span class="keyword">implements</span> <span class="title">IActivityManager</span></span>&#123;</div><div class="line">    <span class="comment">// 1 . 构造函数</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ActivityManagerNative</span><span class="params">()</span> </span>&#123;    </div><div class="line">        attachInterface(<span class="keyword">this</span>, descriptor);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 2 . asInterface函数，转换Binder对象到Interface，有些情况会生成代理对象</span></div><div class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">public</span> IActivityManager <span class="title">asInterface</span><span class="params">(IBinder obj)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (obj == <span class="keyword">null</span>) &#123;    </div><div class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">        &#125;</div><div class="line">        IActivityManager in = (IActivityManager)obj.queryLocalInterface(descriptor);</div><div class="line">        <span class="keyword">if</span> (in != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">return</span> in;</div><div class="line">&#125;</div><div class="line"><span class="keyword">return</span> <span class="keyword">new</span> ActivityManagerProxy(obj);</div><div class="line">&#125;</div><div class="line">    <span class="comment">// 3 . onTransact函数，通过code(这个code就是之前在IActivityManager中定义的transaction code)</span></div><div class="line"><span class="comment">//     找到对应的方法，进行调用</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTransact</span><span class="params">(<span class="keyword">int</span> code, Parcel data, Parcel reply, <span class="keyword">int</span> flags)</span></span></div><div class="line">        <span class="keyword">throws</span> RemoteException &#123;</div><div class="line">          <span class="comment">// 省略一小撮代码</span></div><div class="line">  ｝</div><div class="line"><span class="comment">// 4 . asBinder函数，返回Binder对象，就是自己</span></div><div class="line"><span class="function"><span class="keyword">public</span> IBinder <span class="title">asBinder</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">&#125;</div><div class="line"><span class="comment">// 省略一大波代码</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p><strong>ActivityManagerProxy(对应Stub的内部类Proxy)</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ActivityManagerProxy</span> <span class="keyword">implements</span> <span class="title">IActivityManager</span></span>&#123;</div><div class="line"><span class="comment">//  远程Binder对象</span></div><div class="line"><span class="keyword">private</span> IBinder mRemote;</div><div class="line"><span class="comment">// 1. 构造函数</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">ActivityManagerProxy</span><span class="params">(IBinder remote)</span></span>&#123;</div><div class="line">    mRemote = remote;</div><div class="line">&#125;</div><div class="line"><span class="comment">// 2. asBinder函数，返回远程Binder对象</span></div><div class="line"><span class="function"><span class="keyword">public</span> IBinder <span class="title">asBinder</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="keyword">return</span> mRemote;</div><div class="line">&#125;</div><div class="line"><span class="comment">// 3. 代理对象的接口的实现</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">startActivity</span><span class="params">(IApplicationThread caller, String callingPackage, Intent intent,</span></span></div><div class="line">        String resolvedType, IBinder resultTo, String resultWho, <span class="keyword">int</span> requestCode,</div><div class="line">        <span class="keyword">int</span> startFlags, ProfilerInfo profilerInfo, Bundle options) <span class="keyword">throws</span> RemoteException&#123;</div><div class="line">                 <span class="comment">//  代码省略，不多，可以去看看源码</span></div><div class="line">&#125;</div><div class="line"><span class="comment">// 其他方法实现省略，大同小异</span></div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h5 id="代理对象接口的实现基本都差不多，分为这三部分"><a href="#代理对象接口的实现基本都差不多，分为这三部分" class="headerlink" title="代理对象接口的实现基本都差不多，分为这三部分"></a>代理对象接口的实现基本都差不多，分为这三部分</h5><ol>
+<li><p>拿到data</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Parcel data = Parcel.obtain();</div><div class="line">Parcel reply = Parcel.obtain();</div><div class="line">data.write...(...);</div></pre></td></tr></table></figure>
+</li>
+<li><p>调用方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mRemote.transact(START_ACTIVITY_TRANSACTION, data, reply, <span class="number">0</span>);</div></pre></td></tr></table></figure>
+</li>
+<li><p>返回结果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">reply.readException();</div><div class="line"><span class="keyword">int</span> result = reply.readInt();</div><div class="line">reply.recycle();</div><div class="line">data.recycle();</div><div class="line"><span class="keyword">return</span> result;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="ActivityManagerService：这个才是接口定义方法的真正实现类"><a href="#ActivityManagerService：这个才是接口定义方法的真正实现类" class="headerlink" title="ActivityManagerService：这个才是接口定义方法的真正实现类"></a>ActivityManagerService：这个才是接口定义方法的真正实现类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ActivityManagerService</span> <span class="keyword">extends</span> <span class="title">ActivityManagerNative</span> </span></div><div class="line">       <span class="keyword">implements</span> <span class="title">Watchdog</span>.<span class="title">Monitor</span>, <span class="title">BatteryStatsImpl</span>.<span class="title">BatteryCallback</span> &#123;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">startActivity</span><span class="params">(IApplicationThread caller, String callingPackage,</span></span></div><div class="line">     Intent intent, String resolvedType, IBinder resultTo,  String resultWho,</div><div class="line">     <span class="keyword">int</span> requestCode, <span class="keyword">int</span> startFlags, ProfilerInfo profilerInfo, Bundle options)</div><div class="line">       <span class="keyword">throws</span> RemoteException&#123;</div><div class="line">     <span class="comment">//  代码省略......</span></div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<hr>
+<h2 id="接下来就看你了，可以自己去用Android-Studio写一个AIDL看看生成的类，整个的结构基本上是差不多的"><a href="#接下来就看你了，可以自己去用Android-Studio写一个AIDL看看生成的类，整个的结构基本上是差不多的" class="headerlink" title="接下来就看你了，可以自己去用Android Studio写一个AIDL看看生成的类，整个的结构基本上是差不多的"></a>接下来就看你了，可以自己去用Android Studio写一个AIDL看看生成的类，整个的结构基本上是差不多的</h2>
+      
+    </div>
+    
+  </div>
+  
+    
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/201610/Windows下React-Native环境搭建以及集成Android-Studio/">
+                    Windows下React Native环境搭建以及集成Android Studio
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#了解Binder机制"><span class="toc-number">1.</span> <span class="toc-text">了解Binder机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IActivityManager：这就相当于AIDL中定义的接口，其中包括三个部分"><span class="toc-number">1.1.</span> <span class="toc-text">IActivityManager：这就相当于AIDL中定义的接口，其中包括三个部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ActivityManagerNative：接口的Binder机制实现类，NOTICE-并没有实现IActivityManager中定义的方法，这个后面再说；这里面分为两部分"><span class="toc-number">1.2.</span> <span class="toc-text">ActivityManagerNative：接口的Binder机制实现类，NOTICE:并没有实现IActivityManager中定义的方法，这个后面再说；这里面分为两部分</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#代理对象接口的实现基本都差不多，分为这三部分"><span class="toc-number">1.2.0.1.</span> <span class="toc-text">代理对象接口的实现基本都差不多，分为这三部分</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ActivityManagerService：这个才是接口定义方法的真正实现类"><span class="toc-number">1.3.</span> <span class="toc-text">ActivityManagerService：这个才是接口定义方法的真正实现类</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#接下来就看你了，可以自己去用Android-Studio写一个AIDL看看生成的类，整个的结构基本上是差不多的"><span class="toc-number">2.</span> <span class="toc-text">接下来就看你了，可以自己去用Android Studio写一个AIDL看看生成的类，整个的结构基本上是差不多的</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"从ActivityManagerNative看Android系统AIDL的实现　| genylife's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="201610/从ActivityManagerNative看Android系统AIDL的实现/" data-title="从ActivityManagerNative看Android系统AIDL的实现" data-url="http://genylife.top/201610/从ActivityManagerNative看Android系统AIDL的实现/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"genylife"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/201610/Windows下React-Native环境搭建以及集成Android-Studio/" title="下一篇: Windows下React Native环境搭建以及集成Android Studio">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/201610/从ActivityManagerNative看Android系统AIDL的实现/">从ActivityManagerNative看Android系统AIDL的实现</a></li><li class="post-list-item"><a class="post-list-link" href="/201610/Windows下React-Native环境搭建以及集成Android-Studio/">Windows下React Native环境搭建以及集成Android Studio</a></li><li class="post-list-item"><a class="post-list-link" href="/201609/迟来的Android-Studio快捷键/">迟来的Android Studio快捷键</a></li><li class="post-list-item"><a class="post-list-link" href="/201609/Android-Studio-奇技淫巧/">Android Studio 奇技淫巧</a></li><li class="post-list-item"><a class="post-list-link" href="/201608/Android接口回调机制/">带你了解Android接口回调机制</a></li><li class="post-list-item"><a class="post-list-link" href="/201608/Android 与Html的js相互调用/">Andoid中WebView在本地与Html中JS相互调用</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016 genylife
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-83202552-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
