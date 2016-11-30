@@ -15,16 +15,16 @@
 
 
 
-<meta name="description" content="生活是一场没有目的的旅途，不管走到哪，等待你的都是都是未知">
-<meta property="og:type" content="website">
-<meta property="og:title" content="about">
-<meta property="og:url" content="http://genylife.top/about/index.html">
+<meta name="description" content="你遇到的CertPathValidatorException，有可能只是因为这个……">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于CertPathValidatorException: Trust anchor for certification path not found">
+<meta property="og:url" content="http://genylife.top/201611/关于CertPathValidatorException-Trust-anchor-for-certification-path-not-found/index.html">
 <meta property="og:site_name" content="genylife's blog">
-<meta property="og:description" content="生活是一场没有目的的旅途，不管走到哪，等待你的都是都是未知">
-<meta property="og:updated_time" content="2016-08-27T01:01:41.991Z">
+<meta property="og:description" content="你遇到的CertPathValidatorException，有可能只是因为这个……">
+<meta property="og:updated_time" content="2016-11-30T02:00:32.036Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="about">
-<meta name="twitter:description" content="生活是一场没有目的的旅途，不管走到哪，等待你的都是都是未知">
+<meta name="twitter:title" content="关于CertPathValidatorException: Trust anchor for certification path not found">
+<meta name="twitter:description" content="你遇到的CertPathValidatorException，有可能只是因为这个……">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -56,7 +56,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>about | genylife&#39;s blog</title>
+<title>关于CertPathValidatorException: Trust anchor for certification path not found | genylife&#39;s blog</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -66,7 +66,7 @@
         fancybox: true,
         animate: true,
         isHome: false,
-        isPost: false,
+        isPost: true,
         isArchive: false,
         isTag: false,
         isCategory: false,
@@ -259,11 +259,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="page-undefined" class="article article-type-page" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-关于CertPathValidatorException-Trust-anchor-for-certification-path-not-found" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/about/index.html" class="article-date">
-      <time datetime="2016-08-27T01:01:41.000Z" itemprop="datePublished">2016-08-27</time>
+      <a href="/201611/关于CertPathValidatorException-Trust-anchor-for-certification-path-not-found/" class="article-date">
+      <time datetime="2016-11-30T01:44:42.000Z" itemprop="datePublished">2016-11-30</time>
 </a>
 
 
@@ -278,7 +278,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      about
+      关于CertPathValidatorException: Trust anchor for certification path not found
     </h1>
   
 
@@ -288,6 +288,10 @@
         
 
         
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/疑难杂症/">疑难杂症</a></li></ul>
+    </div>
+
         <div class="clearfix"></div>
       </div>
       
@@ -295,26 +299,18 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-              <style>
-    .article-meta { display: none; }
-    #container .article .article-title { padding-right: 0; }
-    .article-header {
-        padding: 0;
-        padding-top: 26px;
-        border-left: none;
-        text-align: center;
-    }
-    .article-header:hover { border-left: none; }
-    .article-title { font-size: 1.6em }
-    .article-entry hr { margin: 0;}
-    .article-meta,
-    #container .article-info-post.article-info { display: none;}
-    #container .article .article-title { padding: 0; }
-</style>
+        <p>你遇到的CertPathValidatorException，有可能只是因为这个……</p>
+<a id="more"></a>
+<p>前几天在用okhttp访问一个https的网站时遇到了<code>CertPathValidatorException</code>，尝试了以下几种方法之后还是没有效果</p>
+<ul>
+<li>忽略证书验证</li>
+<li>导入相关的证书(从chrome导出)</li>
+</ul>
+<hr>
+<p><strong>最后原因竟然是因为:</strong><br>公司的网络进入是需要先跳转进行登陆验证的，因为在访问原有网站时跳转到了入网验证的页面，然后就爆出了这个<code>CertPathValidatorException</code></p>
+<hr>
+<p>所以在一些需要验证的网络中，一定要确认自己是真正连上了网</p>
 
-
-          
-        
       
     </div>
     
@@ -323,8 +319,42 @@
     
 
 
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/201610/从ActivityManagerNative看Android系统AIDL的实现/">
+                    从ActivityManagerNative看Android系统AIDL的实现
+                </a>
+            </div>
+        
+    </nav>
+
   
 </article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
 
 
 
@@ -342,7 +372,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"about　| genylife's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"关于CertPathValidatorException: Trust anchor for certification path not found　| genylife's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -358,7 +388,7 @@
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="about/index.html" data-title="about" data-url="http://genylife.top/about/index.html"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="201611/关于CertPathValidatorException-Trust-anchor-for-certification-path-not-found/" data-title="关于CertPathValidatorException: Trust anchor for certification path not found" data-url="http://genylife.top/201611/关于CertPathValidatorException-Trust-anchor-for-certification-path-not-found/"></div>
     <script>
         var duoshuoQuery = {short_name:"genylife"};
         var loadComment = function(){
@@ -376,6 +406,24 @@
 </div>
     
 
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/201610/从ActivityManagerNative看Android系统AIDL的实现/" title="下一篇: 从ActivityManagerNative看Android系统AIDL的实现">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/201611/关于CertPathValidatorException-Trust-anchor-for-certification-path-not-found/">关于CertPathValidatorException: Trust anchor for certification path not found</a></li><li class="post-list-item"><a class="post-list-link" href="/201610/从ActivityManagerNative看Android系统AIDL的实现/">从ActivityManagerNative看Android系统AIDL的实现</a></li><li class="post-list-item"><a class="post-list-link" href="/201610/Windows下React-Native环境搭建以及集成Android-Studio/">Windows下React Native环境搭建以及集成Android Studio</a></li><li class="post-list-item"><a class="post-list-link" href="/201609/迟来的Android-Studio快捷键/">迟来的Android Studio快捷键</a></li><li class="post-list-item"><a class="post-list-link" href="/201609/Android-Studio-奇技淫巧/">Android Studio 奇技淫巧</a></li><li class="post-list-item"><a class="post-list-link" href="/201608/Android接口回调机制/">带你了解Android接口回调机制</a></li><li class="post-list-item"><a class="post-list-link" href="/201608/Android 与Html的js相互调用/">Andoid中WebView在本地与Html中JS相互调用</a></li></ul>
 
 
 
